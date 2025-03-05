@@ -30,7 +30,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<UpdateTodo>((event, emit) async {
       try {
         await apiServices.updateTodo(event.id, event.title, event.description);
-        add(LoadTodos()); // Reload todos after updating
+        add(LoadTodos());
       } catch (e) {
         emit(TodoError(message: e.toString()));
       }
