@@ -7,7 +7,7 @@ import 'package:todo_app/models/todo_model.dart';
 class ApiServices {
   final String baseUrl = "https://api.nstack.in/v1/todos";
 
-  Future addTodo(String title, String description) async {
+  Future addTodo(String title, String description, bool complete) async {
     final response = await http.post(
       Uri.parse(baseUrl),
       headers: {
@@ -17,7 +17,7 @@ class ApiServices {
       body: jsonEncode({
         'title': title,
         'description': description,
-        'is_completed': false,
+        'is_completed': complete,
       }),
     );
     log(response.statusCode.toString());
@@ -52,7 +52,12 @@ class ApiServices {
     }
   }
 
-  Future updateTodo(String id, String title, String description) async {
+  Future updateTodo(
+    String id,
+    String title,
+    String description,
+    bool complete,
+  ) async {
     final response = await http.put(
       Uri.parse("$baseUrl/$id"),
       headers: {
@@ -62,7 +67,7 @@ class ApiServices {
       body: jsonEncode({
         'title': title,
         'description': description,
-        'is_completed': false,
+        'is_completed': complete,
       }),
     );
 

@@ -20,7 +20,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
     on<AddTodo>((event, emit) async {
       try {
-        await apiServices.addTodo(event.title, event.description);
+        await apiServices.addTodo(
+          event.title,
+          event.description,
+          event.isComplete,
+        );
         add(LoadTodos());
       } catch (e) {
         emit(TodoError(message: e.toString()));
@@ -29,7 +33,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
     on<UpdateTodo>((event, emit) async {
       try {
-        await apiServices.updateTodo(event.id, event.title, event.description);
+        await apiServices.updateTodo(
+          event.id,
+          event.title,
+          event.description,
+          event.isComplete,
+        );
         add(LoadTodos());
       } catch (e) {
         emit(TodoError(message: e.toString()));

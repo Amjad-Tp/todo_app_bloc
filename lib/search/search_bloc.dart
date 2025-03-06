@@ -26,5 +26,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(SearchError("Faild to Search Todos"));
       }
     });
+
+    on<ClearSearch>((event, emit) {
+      emit(SearchInitial());
+    });
   }
 }

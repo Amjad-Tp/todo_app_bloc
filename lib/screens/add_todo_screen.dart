@@ -6,12 +6,14 @@ class AddTodoScreen extends StatelessWidget {
   final String? id;
   final String? existingTitle;
   final String? existingDescription;
+  final bool? isComplete;
 
   AddTodoScreen({
     super.key,
     this.id,
     this.existingTitle,
     this.existingDescription,
+    this.isComplete,
   });
 
   final _key = GlobalKey<FormState>();
@@ -24,6 +26,7 @@ class AddTodoScreen extends StatelessWidget {
     _descriptionController.text = existingDescription ?? '';
 
     bool isEditing = id != null;
+    bool completeStatus = isComplete ?? false;
 
     return Scaffold(
       appBar: AppBar(
@@ -61,6 +64,7 @@ class AddTodoScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 10),
+
               TextFormField(
                 controller: _descriptionController,
                 maxLength: 200,
@@ -78,6 +82,23 @@ class AddTodoScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
+
+              StatefulBuilder(
+                builder: (context, setState) {
+                  return CheckboxListTile(
+                    activeColor: Colors.blueGrey,
+                    title: const Text("Completed"),
+                    value: completeStatus,
+                    onChanged: (value) {
+                      setState(() {
+                        completeStatus = value!;
+                      });
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: () {
                   if (_key.currentState!.validate()) {
@@ -88,6 +109,7 @@ class AddTodoScreen extends StatelessWidget {
                           id: id!,
                           title: _titleController.text,
                           description: _descriptionController.text,
+                          isComplete: completeStatus,
                         ),
                       );
                     } else {
@@ -96,6 +118,7 @@ class AddTodoScreen extends StatelessWidget {
                         AddTodo(
                           title: _titleController.text,
                           description: _descriptionController.text,
+                          isComplete: completeStatus,
                         ),
                       );
                     }

@@ -37,7 +37,10 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(13.0),
             child: TextField(
+              cursorColor: Colors.blueGrey,
               decoration: InputDecoration(
+                labelText: 'Search Todos',
+                labelStyle: TextStyle(color: Colors.blueGrey),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.blueGrey),
                   borderRadius: BorderRadius.circular(15),
@@ -49,7 +52,9 @@ class HomeScreen extends StatelessWidget {
               ),
               onChanged: (query) {
                 if (query.isEmpty) {
-                  context.read<TodoBloc>().add(LoadTodos());
+                  context.read<SearchBloc>().add(
+                    ClearSearch(),
+                  ); // Dispatch a ClearSearch event
                 } else {
                   context.read<SearchBloc>().add(SearchTodos(query));
                 }
@@ -60,16 +65,18 @@ class HomeScreen extends StatelessWidget {
             child: BlocBuilder<SearchBloc, SearchState>(
               builder: (context, searchState) {
                 if (searchState is SearchLoading) {
-                  return ColorfulCircularProgressIndicator(
-                    colors: [
-                      Colors.blue,
-                      Colors.red,
-                      Colors.yellow,
-                      Colors.green,
-                    ],
-                    indicatorWidth: 70,
-                    indicatorHeight: 70,
-                    strokeWidth: 5,
+                  return Center(
+                    child: ColorfulCircularProgressIndicator(
+                      colors: [
+                        Colors.blue,
+                        Colors.red,
+                        Colors.yellow,
+                        Colors.green,
+                      ],
+                      indicatorWidth: 70,
+                      indicatorHeight: 70,
+                      strokeWidth: 5,
+                    ),
                   );
                 } else if (searchState is SearchLoaded) {
                   return _buildTodo(searchState.todos);
@@ -128,9 +135,31 @@ class HomeScreen extends StatelessWidget {
         return Card(
           color: const Color(0xFFEFEFEF),
           child: ListTile(
+            leading: Checkbox(
+              focusColor: Colors.blueGrey,
+              activeColor: Colors.blueGrey,
+              value: todos[index]['is_completed'] ?? false,
+              onChanged: (bool? value) {
+                context.read<TodoBloc>().add(
+                  UpdateTodo(
+                    id: todos[index]['_id'],
+                    title: todos[index]['title'],
+                    description: todos[index]['description'],
+                    isComplete: value!,
+                  ),
+                );
+              },
+            ),
             title: Text(
               todos[index]['title'],
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 17,
+                decoration:
+                    (todos[index]['is_completed'] ?? false)
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+              ),
             ),
             subtitle: Text(
               todos[index]['description'],
@@ -149,6 +178,7 @@ class HomeScreen extends StatelessWidget {
                               id: todos[index]['_id'],
                               existingTitle: todos[index]['title'],
                               existingDescription: todos[index]['description'],
+                              isComplete: todos[index]['is_completed'],
                             ),
                       ),
                     );
