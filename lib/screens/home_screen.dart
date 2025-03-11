@@ -16,7 +16,6 @@ class HomeScreen extends StatelessWidget {
       //-----App Bar------
       appBar: AppBar(
         title: const Text('Todo App'),
-        centerTitle: true,
         backgroundColor: Colors.blueGrey[800],
         titleTextStyle: TextStyle(
           color: Colors.white,
@@ -29,6 +28,23 @@ class HomeScreen extends StatelessWidget {
             bottomRight: Radius.circular(20),
           ),
         ),
+        toolbarHeight: 80,
+        actionsPadding: EdgeInsets.only(right: 10),
+        actions: [
+          OutlinedButton.icon(
+            onPressed: () {
+              context.read<TodoBloc>().add(LoadTodos());
+            },
+            label: Text('Refresh'),
+            icon: Icon(Icons.refresh_rounded, color: Colors.white),
+            style: ButtonStyle(
+              foregroundColor: WidgetStatePropertyAll(Colors.white),
+              side: WidgetStateProperty.all(
+                const BorderSide(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
 
       //---------Body--------
@@ -124,6 +140,7 @@ class HomeScreen extends StatelessWidget {
         tooltip: 'Add Todo',
         icon: Icon(Icons.add, color: Colors.white),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
